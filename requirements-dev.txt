@@ -1,0 +1,10 @@
+git+https://github.com/rapptz/discord.py.git
+git+https://github.com/andrewthederp/Disgames.git@main
+tortoise-orm>=0.18.1
+python-dotenv>=0.19.2
+time_str>=0.1.0.post2
+mypy>=0.931
+codespell>=2.1.0
+bandit>=1.7.1
+humanize>=3.13.1
+jishaku>=2.3.2
