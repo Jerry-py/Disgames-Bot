@@ -1,5 +1,8 @@
+import asyncio
 import discord
 import math
+import os
+import urllib.request
 from discord.ext import commands
 
 class CalcView(discord.ui.View):
@@ -229,6 +232,70 @@ class FunCog(commands.Cog):
     async def calc(self, ctx : commands.Context):
         embed = discord.Embed(title='Calculator', description='`Enter your equation below`')
         await ctx.send(embed=embed, view=CalcView(ctx, embed))
+        
+    @property
+    def session(self):
+        """Session for making requests"""
+        return self.bot.http._HTTPClient__session
+        
+    @commands.command(name='ttsobama')
+    async def _ttsobama(self, ctx, *, text: str = None):
+        if text is None:
+            return await ctx.send("You need to enter text!")
 
+        if len(text) > 280:
+            return await ctx.send("Text is too long!")
+        await ctx.send('Your video is loading... Might take up to 5-12 seconds', delete_after=12)
+
+        response = self.session.post(url='http://talkobamato.me/synthesize.py', data={
+            "input_text": text
+        })
+        await asyncio.sleep(12)
+        url = response.url.replace('http://talkobamato.me/synthesize.py?speech_key=', '')
+        url = 'http://talkobamato.me/synth/output/' + url + '/obama.mp4'
+        await asyncio.sleep(1)
+        urllib.request.urlretrieve(url, 'obama.mp4')
+        file = discord.File('obama.mp4')
+        await ctx.send(file=file)
+        os.remove('obama.mp4')
+        
+    @commands.command(name='shorten', aliases=['urlshorten'])
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def _shorten(self, ctx, *, url):
+        o = urllib.parse.quote(url, safe='/ :')
+
+        e = await self.session.get(f'https://is.gd/create.php?format=json&url={o}').json()
+
+        return await ctx.send(f"<{e['result_url']}>")
+    
+    @commands.group(name='qr', invoke_without_command=True, description="Make a QR code!")
+    async def qr(self, ctx, value=None):
+        if value is None:
+            o = ctx.message.attachments[0].url
+        o = urllib.parse.quote(value)
+
+        await ctx.send(f'https://api.qrserver.com/v1/create-qr-code/?data={o}')
+
+    @qr.command(name="read")
+    async def _read(self, ctx, image=None):
+        if image is not None:
+            url = urllib.parse.quote(image)
+
+        else:
+            if len(ctx.message.attachments) > 1:
+                return await ctx.send("We can only decode one QR code at a time.")
+
+            elif len(ctx.messsage.attachments) < 1:
+                return await ctx.send("You have to add some type of QR code for us to decode.")
+
+            url = urllib.parse.quote(ctx.message.attachments[0].url)
+
+        try:
+            res = await self.get_data('json', f'https://api.qrserver.com/v1/read-qr-code/?fileurl={url}')
+        except Exception as e:
+            return await ctx.send(f"I couldn't find any QR codes in that image.\nError: {e}")
+
+        await ctx.send(res[0]['symbol'][0]['data'])
+    
 def setup(bot):
     bot.add_cog(FunCog(bot))
