@@ -27,7 +27,7 @@ body:
     attributes:
       label: The Current Solution
       description: >
-        What is the current solution to the problem, if any?
+        What is the current solution to the problem in what you think, if any?
     validations:
       required: false
   - type: textarea
