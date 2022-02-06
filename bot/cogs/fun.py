@@ -4,6 +4,7 @@ import math
 import os
 import urllib.request
 from discord.ext import commands
+from ..utils import resolve_expr
 
 class CalcView(discord.ui.View):
     def __init__(self, ctx : commands.Context, embed : discord.Embed):
@@ -20,20 +21,12 @@ class CalcView(discord.ui.View):
         new_equation = new_equation.replace("^", "**")
         new_equation = new_equation.replace("Ans", f"{self._all_ans[0]}")
         new_equation = new_equation.replace("π", "3.141592653589793")
-        return new_equation
-    
-    def _ns(self):
-        ns = vars(math).copy()
-        ns['__builtins__'] = None
-        return ns
-    
+        return new_equation    
     
     async def calculate(self):
         """Calculate the equation"""
         try:
-            equation = self.parse_equation()
-            ns = self._ns()
-            ans = eval(equation, ns)
+            ans = resolve_expr(self.parse_equation())
             self._all_ans[0] = ans
         except Exception as e:
             self._all_ans[0] = 0
@@ -285,7 +278,7 @@ class FunCog(commands.Cog):
             if len(ctx.message.attachments) > 1:
                 return await ctx.send("We can only decode one QR code at a time.")
 
-            elif len(ctx.messsage.attachments) < 1:
+            elif len(ctx.message.attachments) < 1:
                 return await ctx.send("You have to add some type of QR code for us to decode.")
 
             url = urllib.parse.quote(ctx.message.attachments[0].url)

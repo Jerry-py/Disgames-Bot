@@ -1,6 +1,7 @@
 from .config import *
 from .converters import *
 from .embeds import *
+from .mathparser import *
 from .models import *
 from .pagination import *
 from .request import *
@@ -16,6 +17,7 @@ all = (
     LowerCase,
     MessagePaginator,
     Request,
+    resolve_expr,
     ToSeconds,
     TagModel,
     ToSeconds,
