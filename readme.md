@@ -6,6 +6,7 @@
 A bot for the disgames 3rd party discord.py module.
 
 ---
+
 Note: The logo has been designed by using resources from [flaticon.com](https://www.flaticon.com/)
 
 ## Installation
@@ -22,14 +23,34 @@ git clone https://github.com/Jerry-py/Disgames-Bot.git
 
 Go to the releases tab on github or click [here](https://github.com/Jerry-py/Disgames-Bot/releases)
 
+### Docker
+
+The code has been setup already so all you need do is to download the files and run these commands in the terminal
+
+```docker
+docker build -t disgames-bot . 
+```
+
+The run this to rung
+
+```docker
+docker run disgames-bot
+```
+
+### Heroku
+
+The code already has been setup you just have to download it and upload it heroku
+
 ### Install Dependencies
 
 Run this in your terminal where you cloned the repo:
+
 ```sh
 pip3 install -r requirements.txt
 ```
 
 For development:
+
 ```sh
 pip3 install -r requirements-dev.txt
 ```
@@ -37,6 +58,7 @@ pip3 install -r requirements-dev.txt
 ### Run the Bot
 
 Run in the terminal where you cloned the repo (The parent directory):
+
 ```sh
 python3 launcher.py
 ```
